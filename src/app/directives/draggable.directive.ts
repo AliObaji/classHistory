@@ -1,29 +1,59 @@
-import { Directive,ElementRef,Renderer,OnInit,AfterViewInit } from '@angular/core';
+import {Directive, ElementRef, Renderer, OnInit, HostListener} from '@angular/core';
 
 @Directive({
-  selector: '[appDraggable]',
-  host: {
-    '(click)': 'onClick($event)'
-  }
+  selector: '[appDraggable]'
 })
-export class DraggableDirective implements OnInit,AfterViewInit{
+export class DraggableDirective implements OnInit {
 
-  constructor(private el: ElementRef,private renderer: Renderer) {
+  private deltaX: number = 0;
+  private deltaY: number = 0;
 
+  private tempX: number = 0;
+  private tempY: number = 0;
+
+  constructor(private _elementRef: ElementRef, private renderer: Renderer) {}
+
+  ngOnInit() {
+    //get the current element
+    this.renderer.setElementAttribute(this._elementRef.nativeElement, 'draggable', 'true');
+
+    //event listener to retrieve dragover coordinates.
+    document.addEventListener("dragover", (ev:DragEvent) => {
+      this.tempX = ev.x;
+      this.tempY = ev.y;
+    });
   }
 
-  ngOnInit(){
-    this.renderer.setElementStyle(this.el.nativeElement,"background-color","blue");
+  @HostListener('dragstart', ['$event'])
+  onDragStart(e) {
+    if (e.dataTransfer != null) {
+      e.dataTransfer.setData('text/plain', null);
+    }
+    console.log("started dragging");
+
+    this.deltaX = e.x - this._elementRef.nativeElement.offsetLeft;
+    this.deltaY = e.y - this._elementRef.nativeElement.offsetTop;
   }
 
-  ngAfterViewInit(){
-    console.log(this.el.nativeElement.getAttribute('width'));
-
+  @HostListener('drag', ['$event'])
+  onDrag(e) {
+    this.setChanges(this._elementRef.nativeElement, this.renderer, this.tempX, this.tempY, this.deltaX, this.deltaY);
   }
 
-  onClick(event: MouseEvent){
-    console.log(event.x);
-    console.log(event.y);
+  @HostListener('dragend', ['$event'])
+  onDragEnd(e) {
+    this.deltaX = 0;
+    this.deltaY = 0;
+    this.tempX = 0;
+    this.tempY = 0;
+    console.log('stopped dragging!');
   }
 
+  private setChanges(el: any, rend: Renderer, tempX: number, tempY: number, delX: number, delY: number) {
+    if (!tempX || !tempY) return;
+
+    rend.setElementStyle(el, 'top', (tempY - delY) + 'px');
+    rend.setElementStyle(el, 'left', (tempX - delX) + 'px');
+
+  }
 }
