@@ -17,11 +17,7 @@ export class DraggableDirective implements OnInit {
     //get the current element
     this.renderer.setElementAttribute(this._elementRef.nativeElement, 'draggable', 'true');
 
-    //event listener to retrieve dragover coordinates.
-    document.addEventListener("dragover", (ev:DragEvent) => {
-      this.tempX = ev.x;
-      this.tempY = ev.y;
-    });
+
   }
 
   @HostListener('dragstart', ['$event'])
@@ -29,6 +25,11 @@ export class DraggableDirective implements OnInit {
     if (e.dataTransfer != null) {
       e.dataTransfer.setData('text/plain', null);
     }
+    //event listener to retrieve dragover coordinates. attached only when needed.
+    document.addEventListener("dragover", (ev:DragEvent) => {
+      this.tempX = ev.x;
+      this.tempY = ev.y;
+    });
     console.log("started dragging");
 
     this.deltaX = e.x - this._elementRef.nativeElement.offsetLeft;
@@ -47,6 +48,9 @@ export class DraggableDirective implements OnInit {
     this.tempX = 0;
     this.tempY = 0;
     console.log('stopped dragging!');
+
+    //remove the doc event handler when not needed.
+    document.removeEventListener('dragover');
   }
 
   private setChanges(el: any, rend: Renderer, tempX: number, tempY: number, delX: number, delY: number) {
