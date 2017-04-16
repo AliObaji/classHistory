@@ -2,6 +2,7 @@
  * Created by Lenovo on 16-Apr-17.
  */
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'main-form',
@@ -11,11 +12,10 @@ import { Component } from '@angular/core';
 
 export class MainFormComponent{
   private chairs: number;
-  private errMessage: string;
 
-  constructor(){}
+  constructor(private Router: Router){}
 
   onSubmit(){
-
+    this.Router.navigate(['/classroom']);
   }
 }
