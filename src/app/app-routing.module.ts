@@ -4,9 +4,13 @@
 import { NgModule }             from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { ClassRoomComponent } from './Components/class-room/class-room.component';
+//components
+import { MainFormComponent } from './Components/main-form/main-form.component';
+import { ClassRoomComponent } from './components/class-room/class-room.component';
 
 const routes : Routes = [
+  {path: '', redirectTo:'mainform', pathMatch: 'full'},
+  {path: 'mainform', component: MainFormComponent},
   {path: 'classroom', component: ClassRoomComponent }
 ];
 
