@@ -11,7 +11,7 @@ import { ClassRoomComponent } from './components/class-room/class-room.component
 const routes : Routes = [
   {path: '', redirectTo:'mainform', pathMatch: 'full'},
   {path: 'mainform', component: MainFormComponent},
-  {path: 'classroom', component: ClassRoomComponent }
+  {path: 'classroom/:num', component: ClassRoomComponent }
 ];
 
 @NgModule({

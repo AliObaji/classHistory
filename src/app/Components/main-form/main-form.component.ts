@@ -16,6 +16,6 @@ export class MainFormComponent{
   constructor(private Router: Router){}
 
   onSubmit(){
-    this.Router.navigate(['/classroom']);
+    this.Router.navigate(['/classroom',this.chairs]);
   }
 }
