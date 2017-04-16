@@ -10,5 +10,12 @@ import { Component } from '@angular/core';
 })
 
 export class MainFormComponent{
+  private chairs: number;
+  private errMessage: string;
 
+  constructor(){}
+
+  onSubmit(){
+
+  }
 }

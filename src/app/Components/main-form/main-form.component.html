@@ -1,7 +1,8 @@
-<form>
+<form (ngSubmit) = "onSubmit()" #mainform="ngForm">
   <div class="form-group">
-    <label for="formGroupExampleInput">Number of chairs</label>
-    <input type="text" class="form-control" id="formGroupExampleInput" placeholder="1,2,3, etc..">
+    <label for="formGroupExampleInput">Please select the number of chairs you want</label>
+    <input [(ngModel)] ="chairs" name="chairsNumber" type="number" min="5" max="20" required class="form-control" id="formGroupExampleInput" placeholder="Minimum of 5 chairs">
   </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
+  {{errMessage}}
+  <button type="submit" class="btn btn-primary" [disabled]="!mainform.form.valid" >Submit</button>
 </form>
