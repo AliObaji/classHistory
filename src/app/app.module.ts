@@ -5,11 +5,14 @@ import { HttpModule } from '@angular/http';
 
 
 import { AppComponent } from './app.component';
+import { ClassRoomComponent } from './Components/class-room/class-room.component';
+
 import { DraggableDirective } from './directives/draggable.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
+    ClassRoomComponent,
     DraggableDirective
   ],
   imports: [
