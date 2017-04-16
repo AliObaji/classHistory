@@ -8,16 +8,14 @@ export class DraggableDirective implements OnInit {
   private deltaX: number = 0;
   private deltaY: number = 0;
 
-  private tempX: number = 0;
-  private tempY: number = 0;
+  private dragX: number = 0;
+  private dragY: number = 0;
 
   constructor(private _elementRef: ElementRef, private renderer: Renderer) {}
 
   ngOnInit() {
-    //get the current element
+    //TODO: make the element draggable only when this attribute it set.
     this.renderer.setElementAttribute(this._elementRef.nativeElement, 'draggable', 'true');
-
-
   }
 
   @HostListener('dragstart', ['$event'])
@@ -25,10 +23,10 @@ export class DraggableDirective implements OnInit {
     if (e.dataTransfer != null) {
       e.dataTransfer.setData('text/plain', null);
     }
-    //event listener to retrieve dragover coordinates. attached only when needed.
-    document.addEventListener("dragover", (ev:DragEvent) => {
-      this.tempX = ev.x;
-      this.tempY = ev.y;
+    //event listener to retrieve dragover coordinates. attached only when needed to improve performance.
+    document.addEventListener("dragover", (ev: DragEvent) => {
+      this.dragX = ev.x;
+      this.dragY = ev.y;
     });
     console.log("started dragging");
 
@@ -38,21 +36,24 @@ export class DraggableDirective implements OnInit {
 
   @HostListener('drag', ['$event'])
   onDrag(e) {
-    this.setChanges(this._elementRef.nativeElement, this.renderer, this.tempX, this.tempY, this.deltaX, this.deltaY);
+    this.setChanges(this._elementRef.nativeElement, this.renderer, this.dragX, this.dragY, this.deltaX, this.deltaY);
   }
 
   @HostListener('dragend', ['$event'])
   onDragEnd(e) {
+    //reset all coordinates.
     this.deltaX = 0;
     this.deltaY = 0;
-    this.tempX = 0;
-    this.tempY = 0;
+    this.dragX = 0;
+    this.dragY = 0;
     console.log('stopped dragging!');
 
     //remove the doc event handler when not needed.
     document.removeEventListener('dragover');
   }
 
+
+  //pure function. Update the element to its new coordinates.
   private setChanges(el: any, rend: Renderer, tempX: number, tempY: number, delX: number, delY: number) {
     if (!tempX || !tempY) return;
 
