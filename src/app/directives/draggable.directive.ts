@@ -11,6 +11,8 @@ export class DraggableDirective implements OnInit {
   private dragX: number = 0;
   private dragY: number = 0;
 
+  private dragOverFunction: any; //function to detach dragover listener.
+
   constructor(private _elementRef: ElementRef, private renderer: Renderer) {}
 
   ngOnInit() {
@@ -24,10 +26,12 @@ export class DraggableDirective implements OnInit {
       e.dataTransfer.setData('text/plain', null);
     }
     //event listener to retrieve dragover coordinates. attached only when needed to improve performance.
-    document.addEventListener("dragover", (ev: DragEvent) => {
+    console.log(this._elementRef.nativeElement.parentNode);
+    this.dragOverFunction = this.renderer.listen(this._elementRef.nativeElement.parentNode,'dragover', (ev:DragEvent)=>{
       this.dragX = ev.x;
       this.dragY = ev.y;
     });
+
     console.log("started dragging");
 
     this.deltaX = e.x - this._elementRef.nativeElement.offsetLeft;
@@ -49,7 +53,7 @@ export class DraggableDirective implements OnInit {
     console.log('stopped dragging!');
 
     //remove the doc event handler when not needed.
-    document.removeEventListener('dragover');
+    this.dragOverFunction();
   }
 
 

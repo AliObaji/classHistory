@@ -23,7 +23,7 @@ export class ClassRoomComponent implements OnInit{
 
   ngOnInit(){
       this.retrieveParams();
-      this.createChairs();
+      this.createChairs(this.chairsNumber);
   }
 
 
@@ -41,8 +41,8 @@ export class ClassRoomComponent implements OnInit{
     });
   }
 
-  private createChairs(){
-    for(var i = 1; i <= this.chairsNumber; i++){
+  private createChairs(chairsNumber: number){
+    for(var i = 1; i <= chairsNumber; i++){
       let chair = new ChairModel();
       this.chairs.push(chair);
     }
