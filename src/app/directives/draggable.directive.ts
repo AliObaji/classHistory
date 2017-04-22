@@ -26,7 +26,6 @@ export class DraggableDirective implements OnInit {
       e.dataTransfer.setData('text/plain', null);
     }
     //event listener to retrieve dragover coordinates. attached only when needed to improve performance.
-    console.log(this._elementRef.nativeElement.parentNode);
     this.dragOverFunction = this.renderer.listen(this._elementRef.nativeElement.parentNode,'dragover', (ev:DragEvent)=>{
       this.dragX = ev.x;
       this.dragY = ev.y;
@@ -61,8 +60,43 @@ export class DraggableDirective implements OnInit {
   private setChanges(el: any, rend: Renderer, tempX: number, tempY: number, delX: number, delY: number) {
     if (!tempX || !tempY) return;
 
-    rend.setElementStyle(el, 'top', (tempY - delY) + 'px');
-    rend.setElementStyle(el, 'left', (tempX - delX) + 'px');
+    rend.setElementStyle(el, 'top', this.normalizeChanges(el,tempY,delY,false) + 'px');
+    rend.setElementStyle(el, 'left', this.normalizeChanges(el,tempX,delX,true) + 'px');
 
+  }
+
+  //this function normalizes the new coordinates so the divs cannot be dragged outside their container.
+  private normalizeChanges(el: any, temp: number, del: number, isX: boolean): number{
+
+    let newVal = temp-del;
+
+    //if we are working with the x coordinate.
+    if(isX){
+
+      if(newVal < el.parentNode.offsetLeft){
+        return el.parentNode.offsetLeft;
+      }
+      else if((newVal + el.offsetWidth) > el.parentNode.offsetLeft + el.parentNode.offsetWidth){
+        return el.parentNode.offsetLeft + el.parentNode.offsetWidth - el.offsetWidth;
+      }
+      else{
+        return newVal;
+      }
+
+    }
+    //if we are working with the y coordinate.
+    else{
+
+      if(newVal < el.parentNode.offsetTop){
+        return el.parentNode.offsetTop;
+      }
+      else if((newVal + el.offsetHeight) > el.parentNode.offsetTop + el.parentNode.offsetHeight){
+        return el.parentNode.offsetTop + el.parentNode.offsetHeight - el.offsetHeight;
+      }
+      else{
+        return newVal;
+      }
+
+    }
   }
 }
